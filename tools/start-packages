@@ -1,0 +1,32 @@
+#!/bin/sh
+
+echo "Process Start-packages Started ..."
+
+echo "Applying Password ..."
+useradd -m ${GUEST_LOGIN} && echo "${GUEST_LOGIN}:${GUEST_PASSWD}" | chpasswd
+chown -R ${GUEST_LOGIN}:${GUEST_LOGIN} ${VOL_DIR}
+echo "${GUEST_LOGIN}:${GUEST_PASSWD}" | sudo chpasswd
+echo "${GUEST_LOGIN} ALL=(ALL:ALL) ALL" >> /etc/sudoers
+echo "Ok!"
+
+# echo "#!/bin/sh" > /usr/local/bin/create-certbot
+# echo "certbot --apache --tls-sni-01-port 30443 --http-01-port 30080 -d ${SRV_NAME}" >> /usr/local/bin/create-certbot
+# echo "exit 0" >> /usr/local/bin/create-certbot
+# echo "" >> /usr/local/bin/create-certbot
+# chmod +x /usr/local/bin/create-certbot
+
+# sudo /usr/local/bin/create-certs
+
+chown -R www-data:www-data ${VOL_DIR}/glpi
+unlink /etc/apache2/sites-enabled/default-ssl.conf
+rm -fr /etc/apache2/sites-available/default-ssl.conf
+
+echo "Starting Services ..."
+service ssh start
+service apache2 start
+service sudo start
+service mysql start
+echo "Ok!"
+
+echo "Process Start-packages Complete ..."
+tail -f /var/log/apache2/error.log
