@@ -1,7 +1,9 @@
 FROM debian:9.6
 
+RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list
 RUN apt-get update
 RUN apt-get install -y dos2unix wget openssh-server vim sudo apache2 mysql-server mysql-client ca-certificates libapache2-mod-php7.0  php7.0 php7.0-cli php7.0-mbstring php7.0-gd php7.0-imap php7.0-ldap php7.0-mysql php7.0-xmlrpc php7.0-snmp php7.0-curl
+RUN apt-get install -y python-certbot-apache -t stretch-backports
 RUN apt-get autoremove
 RUN apt-get clean
 
@@ -19,10 +21,6 @@ RUN mkdir -p .cache
 COPY ./tools/start-packages /usr/local/bin/start-packages
 RUN dos2unix /usr/local/bin/start-packages \
     && chmod +x /usr/local/bin/start-packages
-
-# COPY ./tools/create-certs /usr/local/bin/create-certs
-# RUN dos2unix /usr/local/bin/create-certs \
-#     && chmod +x /usr/local/bin/create-certs
 
 COPY ./apache/helpdesk.conf /etc/apache2/sites-available/helpdesk.conf
 RUN dos2unix /etc/apache2/sites-available/helpdesk.conf
@@ -49,5 +47,7 @@ EXPOSE 22
 #Apache
 EXPOSE 80
 EXPOSE 443
+#MySQL
+EXPOSE 3306
 
 CMD ["/usr/local/bin/start-packages"]

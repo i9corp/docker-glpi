@@ -11,6 +11,7 @@ services:
      - "00000:22"
      - "00000:80"
      - "00000:443"
+     - "00000:3306"
    volumes:
      - "vol:/etc/helpdesk"
    environment:
@@ -22,7 +23,7 @@ volumes:
 
 ```
 
-No meu caso estou mapeando a porta 443 e definindo a variável "SRV_NAME", pois porteriormente irei incluir um certificado [SSl][2] em meu sistema.
+No meu caso estou mapeando a porta 443 e definindo a variável "SRV_NAME", pois posteriormente irei incluir um certificado [SSl][2] em meu sistema.
 
 #
 
